@@ -1,17 +1,26 @@
 import express from 'express';
-import prisma from '../../config/db.js';
+import * as parentController from './parent.controller.js';
+import { parentValidation } from './parent.validation.js';
+import validate from '../../middleware/validate.middleware.js';
+import upload from '../../middleware/multer.middleware.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+/* #swagger.tags = ['Parent'] */
+
+router.post('/register',
     // #swagger.tags = ['Parent']
-    // #swagger.summary = 'Get all parents'
-    try {
-        const parents = await prisma.parent.findMany();
-        res.status(200).json({ success: true, data: parents });
-    } catch (error) {
-        next(error);
-    }
-});
+    upload.single("parentimage"),
+    parentValidation, validate, parentController.registerParent);
+
+
+router.get('/',
+    // #swagger.tags = ['Parent']
+    parentController.getAllParents);    
+
+
+router.post('/login',
+    // #swagger.tags = ['Parent']
+    parentController.parentLogin);
 
 export default router;

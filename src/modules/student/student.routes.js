@@ -2,19 +2,24 @@ import express from 'express';
 import * as studentController from './student.controller.js';
 import { studentValidation } from './student.validation.js';
 import validate from '../../middleware/validate.middleware.js';
+import authMiddleware from '../../middleware/auth.middlewere.js';
+import parentMiddleware from '../../middleware/parent.middlewere.js';
+import upload from '../../middleware/multer.middleware.js';
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-    // #swagger.tags = ['Student']
-    // #swagger.summary = 'Get all students'
-    studentController.getAllStudents(req, res, next);
-});
+/* #swagger.tags = ['Student'] */
 
-router.post('/', studentValidation, validate, (req, res, next) => {
+router.get('/', studentController.getAllStudents);
+
+router.post('/',
     // #swagger.tags = ['Student']
-    // #swagger.summary = 'Create a new student'
-    studentController.createStudent(req, res, next);
-});
+    authMiddleware,
+    parentMiddleware(),
+    upload.single('studentimage'),
+    studentValidation,
+    validate,
+    studentController.registerStudent
+);
 
 export default router;

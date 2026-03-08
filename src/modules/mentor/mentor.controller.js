@@ -2,7 +2,9 @@ import * as mentorService from "./mentor.service.js";
 
 const registerMentor = async (req, res, next) => {
     try {
-        const result = await mentorService.registerMentor(req, res, next);
+        const { name, email, password, phone, address, lesson, specialization } = req.body;
+            const mentorimage = req.file?.path;
+        const result = await mentorService.registerMentor({ name, email, password, phone, address, lesson, specialization, mentorimage });
         res.status(201).json({
             success: true,
             message: "Mentor registered successfully",
@@ -13,9 +15,30 @@ const registerMentor = async (req, res, next) => {
     }
 };
 
+const mentorLogin = async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        
+        const { mentor, token } = await mentorService.mentorLogin({ email, password });
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+        res.status(200).json({
+            success: true,
+            message: "Login successful",
+            data: { mentor, token },
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const getAllMentors = async (req, res, next) => {
     try {
-        const result = await mentorService.getAllMentors(req, res, next);
+        const result = await mentorService.getAllMentors();
         res.status(200).json({
             success: true,
             message: "Mentors fetched successfully",
@@ -26,4 +49,4 @@ const getAllMentors = async (req, res, next) => {
     }
 };
 
-export { registerMentor, getAllMentors };
+export { registerMentor, mentorLogin, getAllMentors };

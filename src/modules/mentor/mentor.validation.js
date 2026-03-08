@@ -9,6 +9,7 @@ export const mentorValidation = [
     body("address").notEmpty().withMessage("Address is required"),
     body("lesson").optional(),
     body("specialization").optional(),
+    body("mentorimage").optional(),
 ];
 
 export const mentorZodSchema = z.object({
@@ -19,4 +20,5 @@ export const mentorZodSchema = z.object({
     address: z.string().min(1, "Address is required"),
     lesson: z.string().optional(),
     specialization: z.string().optional(),
+    mentorimage: z.string().optional(),
 });

@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cookieParser from 'cookie-parser';
 
 // ESM dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
@@ -27,6 +28,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
+app.use(cookieParser());
 
 // Swagger Documentation
 if (Object.keys(swaggerDocument).length > 0) {

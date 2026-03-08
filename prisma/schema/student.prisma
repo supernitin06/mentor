@@ -5,6 +5,7 @@ model Student {
   lastName    String
   dateOfBirth DateTime?
   gender      Gender?
+  studentimage String?
 
   parentId String
   parent   Parent @relation(fields: [parentId], references: [id])

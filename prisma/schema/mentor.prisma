@@ -3,10 +3,11 @@ model Mentor {
   name           String
   email          String    @unique
   role           Role      @default(MENTOR)
+  mentorimage    String?
   password       String
   phone          String
   address        String
-  lesson         String?
+  lessons        Lesson[]
   specialization String?
   students       Student[]
   createdAt      DateTime  @default(now())

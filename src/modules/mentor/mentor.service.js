@@ -1,92 +1,60 @@
 import prisma from "../../config/db.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { mentorZodSchema } from "./mentor.validation.js";
 
-const registerMentor = async (req, res, next) => {
-    try {
-        const { name, email, password, phone, address, lesson, specialization } = req.body;
+const registerMentor = async (data, req) => {
+    const validated = mentorZodSchema.parse(data);
 
-
-        const existingMentor = await prisma.mentor.findUnique({
-            where: { email },
-        });
-        if (existingMentor) {
-            return res.status(400).json({
-                success: false,
-                message: "Mentor already exists",
-            });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const mentor = await prisma.mentor.create({
-            data: {
-                name,
-                email,
-                password: hashedPassword,
-                phone,
-                address,
-                specialization,
-            },
-        });
-        res.status(201).json({
-            success: true,
-            data: mentor,
-        });
-    } catch (error) {
-        next(error);
+    const existingMentor = await prisma.mentor.findUnique({
+        where: { email: validated.email },
+    });
+    if (existingMentor) {
+        throw new Error("Mentor already exists");
     }
+
+
+    const hashedPassword = await bcrypt.hash(validated.password, 10);
+    const mentor = await prisma.mentor.create({
+        data: {
+            name: validated.name,
+            email: validated.email,
+            password: hashedPassword,
+            phone: validated.phone,
+            address: validated.address,
+            specialization: validated.specialization,
+            mentorimage: validated.mentorimage,
+        },
+    });
+    return mentor;
 };
 
-const mentorLogin = async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-        const mentor = await prisma.mentor.findUnique({
-            where: { email },
-        });
-        if (!mentor) {
-            return res.status(404).json({
-                success: false,
-                message: "Mentor not found",
-            });
-        }
-        const isPasswordValid = await bcrypt.compare(password, mentor.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid password",
-            });
-        }
-        const token = jwt.sign({ id: mentor.id, role: mentor.role }, process.env.JWT_SECRET, {
-            expiresIn: "1h",
-        });
+const mentorLogin = async (data) => {
+    const validated = mentorZodSchema.pick({ email: true, password: true }).parse(data);
 
-
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 24 * 60 * 60 * 1000,
-        });
-
-        res.status(200).json({
-            success: true,
-            data: mentor,
-        });
-    } catch (error) {
-        next(error);
+    const mentor = await prisma.mentor.findUnique({
+        where: { email: validated.email },
+    });
+    if (!mentor) {
+        throw new Error("Mentor not found");
     }
+
+    const isPasswordValid = await bcrypt.compare(validated.password, mentor.password);
+    if (!isPasswordValid) {
+        throw new Error("Invalid password");
+    }
+
+    const token = jwt.sign({ id: mentor.id, role: mentor.role }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+    });
+
+    return { mentor, token };
+};
+
+const getAllMentors = async () => {
+    const mentors = await prisma.mentor.findMany();
+    return mentors;
 };
 
 
-
-const getAllMentors = async (req, res, next) => {
-    try {
-        const mentors = await prisma.mentor.findMany();
-        res.status(200).json({ success: true, data: mentors });
-    } catch (error) {
-        next(error);
-    }
-};
-
-
-
-
-
-export { registerMentor, getAllMentors };
+export { registerMentor, mentorLogin, getAllMentors };

@@ -1,0 +1,9 @@
+model Lesson {
+    id        String   @id @default(uuid())
+    name      String   @unique
+    description String
+    mentorId String
+    mentor Mentor @relation(fields: [mentorId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

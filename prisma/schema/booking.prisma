@@ -1,5 +1,6 @@
 model Booking {
   id        String   @id @default(uuid())
+  booking_name String
   studentId String
   student   Student  @relation(fields: [studentId], references: [id])
   createdAt DateTime @default(now())
