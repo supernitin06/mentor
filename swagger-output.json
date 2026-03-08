@@ -1,0 +1,119 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Mentor-Student-Parent API",
+    "description": "API Documentation for the Mentor Management System",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Student",
+      "description": "Student management"
+    },
+    {
+      "name": "Mentor",
+      "description": "Mentor management"
+    },
+    {
+      "name": "Parent",
+      "description": "Parent management"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "General"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/students/": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "summary": "Get all students",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Student"
+        ],
+        "summary": "Create a new student",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "parentId": {
+                  "example": "any"
+                },
+                "mentorId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/mentors/": {
+      "get": {
+        "tags": [
+          "Mentor"
+        ],
+        "summary": "Get all mentors",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/parents/": {
+      "get": {
+        "tags": [
+          "Parent"
+        ],
+        "summary": "Get all parents",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}

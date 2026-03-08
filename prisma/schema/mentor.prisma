@@ -1,0 +1,14 @@
+model Mentor {
+  id             String    @id @default(uuid())
+  name           String
+  email          String    @unique
+  role           Role      @default(MENTOR)
+  password       String
+  phone          String
+  address        String
+  lesson         String?
+  specialization String?
+  students       Student[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
