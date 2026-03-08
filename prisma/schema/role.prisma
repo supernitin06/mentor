@@ -8,7 +8,6 @@ model RoleModel {
 enum Role {
   ADMIN
   MENTOR
-  STUDENT
   PARENT
 }
 
