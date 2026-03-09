@@ -6,6 +6,9 @@ model Student {
   dateOfBirth DateTime?
   gender      Gender?
   studentimage String?
+  email String @unique
+  password String
+  role Role @default(STUDENT)
 
   parentId String
   parent   Parent @relation(fields: [parentId], references: [id])
@@ -20,11 +23,12 @@ model Student {
   avatarUrl String?
   notes     String?
 
-  bookings Booking[]
+  lessonAssigns LessonAssign[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@index([parentId])
+  @@index([email])
 }

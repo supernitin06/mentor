@@ -24,7 +24,24 @@ import apiRoutes from './routes/api.routes.js';
 const app = express();
 
 // Middlewares
-app.use(cors());
+const allowedOrigins = process.env.CORS_ORIGINS === '*' 
+    ? true 
+    : (process.env.CORS_ORIGINS || '').split(',').map(o => o.trim());
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (allowedOrigins === true || !origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('CORS not allowed'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200,
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));

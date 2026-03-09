@@ -2,7 +2,7 @@ import * as parentService from "./parent.services.js";
 
 const registerParent = async (req, res, next) => {
     try {
-        const { name, email,     phone, age, gender, address, password } = req.body;
+        const { name, email, phone, age, gender, address, password } = req.body;
         const parentimage = req.file?.path;
         const result = await parentService.registerParent({ name, email, phone, age, gender, address, parentimage, password });
         res.status(201).json({
@@ -22,15 +22,15 @@ const parentLogin = async (req, res, next) => {
 
         res.cookie("token", result.token, {
             httpOnly: true,
-            secure: true,
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
             maxAge: 24 * 60 * 60 * 1000,
         });
 
         res.status(200).json({
             success: true,
             message: "Parent logged in successfully",
-            data: result.parent,
+            data: { token: result.token, parent: result.parent },
         });
     } catch (error) {
         next(error);
@@ -50,4 +50,32 @@ const getAllParents = async (req, res, next) => {
     }
 };
 
-export { registerParent, getAllParents, parentLogin };
+
+
+const assignlessontostudent = async (req, res, next) => {
+    try {
+        const result = await parentService.lessonAssign(req.body);
+        res.status(200).json({
+            success: true,
+            message: "Lesson assigned to student successfully",
+            data: result,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const removeLessonAssignment = async (req, res, next) => {
+    try {
+        const result = await parentService.removeLessonAssignment(req.body);
+        res.status(200).json({
+            success: true,
+            message: "Lesson removed from student successfully",
+            data: result,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export { registerParent, getAllParents, parentLogin, assignlessontostudent, removeLessonAssignment };

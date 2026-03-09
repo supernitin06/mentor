@@ -50,4 +50,52 @@ const getAllParents = async () => {
     return parents;
 };
 
-export { registerParent, getAllParents, parentLogin };
+const lessonAssign = async (data) => {
+    const { studentId, lessonId } = data;
+
+    // Verify student exists
+    const student = await prisma.student.findUnique({
+        where: { id: studentId }
+    });
+    if (!student) throw new Error("Student not found");
+
+    // Verify lesson exists
+    const lesson = await prisma.lesson.findUnique({
+        where: { id: lessonId }
+    });
+    if (!lesson) throw new Error("Lesson not found");
+
+    // Create assignment
+    const assignment = await prisma.lessonAssign.upsert({
+        where: {
+            studentId_lessonId: {
+                studentId,
+                lessonId
+            }
+        },
+        update: {}, // If it already exists, do nothing
+        create: {
+            studentId,
+            lessonId
+        }
+    });
+
+    return assignment;
+};
+
+const removeLessonAssignment = async (data) => {
+    const { studentId, lessonId } = data;
+
+    const deleted = await prisma.lessonAssign.delete({
+        where: {
+            studentId_lessonId: {
+                studentId,
+                lessonId
+            }
+        }
+    });
+
+    return deleted;
+};
+
+export { registerParent, getAllParents, parentLogin, lessonAssign, removeLessonAssignment };

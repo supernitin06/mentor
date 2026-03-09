@@ -24,6 +24,7 @@ const doc = {
         { name: 'Mentor', description: 'Mentor management' },
         { name: 'Parent', description: 'Parent management' },
         { name: 'Lesson', description: 'Lesson management' },
+        { name: 'Session', description: 'Lesson session management' },
     ],
     components: {
         securitySchemes: {
@@ -40,6 +41,8 @@ const doc = {
                     studentimage: { type: 'string', format: 'binary', example: 'student.jpg' },
                     firstName: { type: 'string', example: 'John' },
                     lastName: { type: 'string', example: 'Doe' },
+                    email: { type: 'string', example: 'student@example.com' },
+                    password: { type: 'string', example: 'password123' },
                     dateOfBirth: { type: 'string', format: 'date', example: '2015-01-01' },
                     gender: { type: 'string', enum: ['MALE', 'FEMALE', 'OTHER'], example: 'MALE' },
                     mentorId: { type: 'string', example: 'uuid-id-here' },
@@ -88,6 +91,16 @@ const doc = {
                     description: { type: 'string', example: 'Algebra and Calculus basics' }
                 },
                 required: ['name', 'description']
+            },
+            Session: {
+                type: 'object',
+                properties: {
+                    lessonId: { type: 'string', format: 'uuid' },
+                    date: { type: 'string', format: 'date-time' },
+                    topic: { type: 'string' },
+                    summary: { type: 'string' }
+                },
+                required: ['lessonId', 'date', 'topic']
             }
         }
     },

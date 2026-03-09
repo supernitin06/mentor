@@ -1,89 +1,121 @@
 import prisma from "../../config/db.js";
 
-const createLesson = async (req, res, next) => {
-    try {
-         const { name, description} = req.body;
-         const checkLesson = await prisma.lesson.findUnique({
-            where: { name },
-         });
-         if(checkLesson){
-            throw new Error("Lesson already exists");
-         }
-    
-        const result = await prisma.lesson.create({
-            data: { name, description, mentorId: req.user.id },
-        });
-        res.status(201).json({
-            success: true,
-            message: "Lesson created successfully",
-            data: result,
-        });
-    } catch (error) {
-        next(error);
+const createLesson = async (data) => {
+    const { name, description, mentorId } = data;
+
+    // Check if lesson already exists
+    const checkLesson = await prisma.lesson.findUnique({
+        where: { name },
+    });
+    if (checkLesson) {
+        throw new Error("Lesson already exists");
     }
+
+    const result = await prisma.lesson.create({
+        data: { name, description, mentorId },
+    });
+    return result;
 };
 
-const getAllLessons = async (req, res, next) => {
-    try {
-        const result = await prisma.lesson.findMany();
-        res.status(200).json({
-            success: true,
-            message: "Lessons fetched successfully",
-            data: result,
-        });
-    } catch (error) {
-        next(error);
-    }
+const getAllLessons = async () => {
+    const result = await prisma.lesson.findMany({
+        include: {
+            mentor: {
+                select: {
+                    name: true,
+                    email: true
+                }
+            }
+        }
+    });
+    return result;
 };
 
-const getLessonById = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const result = await prisma.lesson.findUnique({
-            where: { id },
-        });
-        res.status(200).json({
-            success: true,
-            message: "Lesson fetched successfully",
-            data: result,
-        });
-    } catch (error) {
-        next(error);
+const getLessonById = async (id) => {
+    const result = await prisma.lesson.findUnique({
+        where: { id },
+        include: {
+            mentor: {
+                select: {
+                    name: true,
+                    email: true
+                }
+            }
+        }
+    });
+    if (!result) {
+        throw new Error("Lesson not found");
     }
+    return result;
 };
 
-
-const updateLesson = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const { name, description } = req.body;
-        const result = await prisma.lesson.update({
-            where: { id },
-            data: { name, description },
-        });
-        res.status(200).json({
-            success: true,
-            message: "Lesson updated successfully",
-            data: result,
-        });
-    } catch (error) {
-        next(error);
-    }
+const updateLesson = async (id, data) => {
+    const { name, description } = data;
+    const result = await prisma.lesson.update({
+        where: { id },
+        data: { name, description },
+    });
+    return result;
 };
 
-const deleteLesson = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const result = await prisma.lesson.delete({
-            where: { id },
-        });
-        res.status(200).json({
-            success: true,
-            message: "Lesson deleted successfully",
-            data: result,
-        });
-    } catch (error) {
-        next(error);
-    }
+const deleteLesson = async (id) => {
+    const result = await prisma.lesson.delete({
+        where: { id },
+    });
+    return result;
 };
-export { createLesson, getAllLessons, getLessonById, updateLesson, deleteLesson };
+
+const getLessonsByMentor = async (mentorId) => {
+    const result = await prisma.lesson.findMany({
+        where: { mentorId },
+    });
+    return result;
+};
+
+const getLessonsByStudent = async (studentId) => {
+    // Find all LessonAssign records for this student and include the lesson details
+    const assignments = await prisma.lessonAssign.findMany({
+        where: { studentId },
+        include: {
+            lesson: {
+                include: {
+                    mentor: {
+                        select: { name: true, email: true }
+                    }
+                }
+            }
+        }
+    });
+
+    // Extract just the lesson objects
+    const lessons = assignments.map(a => a.lesson);
+    return lessons;
+};
+
+const getLessonAssignToStudent = async (studentId) => {
+    const result = await prisma.lessonAssign.findMany({
+        where: { studentId },
+        include: {
+            lesson: {
+                include: {
+                    mentor: {
+                        select: { name: true, email: true }
+                    },
+                    sessions: true
+                }
+            }
+        }
+    });
+    return result;
+};
+
+export {
+    createLesson,
+    getAllLessons,
+    getLessonById,
+    updateLesson,
+    deleteLesson,
+    getLessonsByMentor,
+    getLessonsByStudent,
+    getLessonAssignToStudent
+};

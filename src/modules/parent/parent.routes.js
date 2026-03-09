@@ -16,11 +16,19 @@ router.post('/register',
 
 router.get('/',
     // #swagger.tags = ['Parent']
-    parentController.getAllParents);    
+    parentController.getAllParents);
 
 
 router.post('/login',
     // #swagger.tags = ['Parent']
     parentController.parentLogin);
+
+router.post('/assign-lesson',
+    // #swagger.tags = ['Parent']
+    parentController.assignlessontostudent);
+
+router.post('/remove-lesson',
+    // #swagger.tags = ['Parent']
+    parentController.removeLessonAssignment);
 
 export default router;

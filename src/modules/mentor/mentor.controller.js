@@ -3,7 +3,7 @@ import * as mentorService from "./mentor.service.js";
 const registerMentor = async (req, res, next) => {
     try {
         const { name, email, password, phone, address, lesson, specialization } = req.body;
-            const mentorimage = req.file?.path;
+        const mentorimage = req.file?.path;
         const result = await mentorService.registerMentor({ name, email, password, phone, address, lesson, specialization, mentorimage });
         res.status(201).json({
             success: true,
@@ -18,18 +18,18 @@ const registerMentor = async (req, res, next) => {
 const mentorLogin = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        
+
         const { mentor, token } = await mentorService.mentorLogin({ email, password });
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
             maxAge: 24 * 60 * 60 * 1000,
         });
         res.status(200).json({
             success: true,
             message: "Login successful",
-            data: { mentor, token },
+            data: { token, mentor },
         });
     } catch (error) {
         next(error);

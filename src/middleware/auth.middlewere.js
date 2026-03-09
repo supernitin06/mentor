@@ -24,6 +24,7 @@ const authMiddleware = async (req, res, next) => {
                 });
             }
             req.user = mentor;
+            req.user.role = decoded.role;
         }
 
         if(decoded.role === "STUDENT"){
@@ -37,6 +38,7 @@ const authMiddleware = async (req, res, next) => {
                 });
             }
             req.user = student;
+            req.user.role = decoded.role;
         }
 
         if(decoded.role === "PARENT"){
@@ -50,8 +52,15 @@ const authMiddleware = async (req, res, next) => {
                 });
             }
             req.user = parent;
+            req.user.role = decoded.role;
         }
 
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
 
         next();
     } catch (error) {

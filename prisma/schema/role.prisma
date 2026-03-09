@@ -9,6 +9,7 @@ enum Role {
   ADMIN
   MENTOR
   PARENT
+  STUDENT
 }
 
 enum Gender {
