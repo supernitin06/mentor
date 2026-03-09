@@ -138,6 +138,19 @@
         }
       }
     },
+    "/api/students/getstudentbyparent": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/mentors/register": {
       "post": {
         "tags": [
@@ -374,6 +387,48 @@
         }
       }
     },
+    "/api/lessons/getlessonbymentor": {
+      "get": {
+        "tags": [
+          "Lesson"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/lessons/getlesson": {
+      "get": {
+        "tags": [
+          "Lesson"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/lessons/getlessonassigntostudent": {
+      "get": {
+        "tags": [
+          "Lesson"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
     "/api/lessons/{id}": {
       "get": {
         "tags": [
@@ -393,9 +448,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       },
@@ -572,6 +624,39 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/llm/summarize": {
+      "post": {
+        "tags": [
+          "LLM"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "413": {
+            "description": "Payload Too Large"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }

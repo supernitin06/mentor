@@ -6,7 +6,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
-
+import dotenv from 'dotenv';
+dotenv.config();
 // ESM dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,12 +21,13 @@ if (fs.existsSync(swaggerPath)) {
 
 import errorMiddleware from './middleware/error.middleware.js';
 import apiRoutes from './routes/api.routes.js';
+import llmRoutes from './modules/llm/llm.route.js';
 
 const app = express();
 
 // Middlewares
-const allowedOrigins = process.env.CORS_ORIGINS === '*' 
-    ? true 
+const allowedOrigins = process.env.CORS_ORIGINS === '*'
+    ? true
     : (process.env.CORS_ORIGINS || '').split(',').map(o => o.trim());
 
 app.use(cors({
@@ -63,6 +65,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', apiRoutes);
+app.use('/llm', llmRoutes);
 
 // Error Handling Middleware
 app.use(errorMiddleware);

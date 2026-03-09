@@ -68,6 +68,7 @@ const deleteLesson = async (id) => {
 const getLessonsByMentor = async (mentorId) => {
     const result = await prisma.lesson.findMany({
         where: { mentorId },
+        include: { sessions: true }
     });
     return result;
 };
