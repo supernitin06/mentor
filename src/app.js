@@ -28,7 +28,7 @@ const app = express();
 // Middlewares
 const allowedOrigins = process.env.CORS_ORIGINS === '*'
     ? true
-    : (process.env.CORS_ORIGINS || '').split(',').map(o => o.trim());
+    : (process.env.CORS_ORIGINS || 'https://mentorui-ecru.vercel.app,http://localhost:5173,http://localhost:3000').split(',').map(o => o.trim());
 
 app.use(cors({
     origin: function (origin, callback) {
