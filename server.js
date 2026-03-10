@@ -3,7 +3,6 @@ import app from './src/app.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-console.log("Starting server. JWT_SECRET check:", process.env.JWT_SECRET ? "Present" : "Missing");
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {

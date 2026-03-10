@@ -5,12 +5,22 @@ const authMiddleware = async (req, res, next) => {
     try {
         let token = req.cookies.token;
 
+        // Check for token in Authorization header if not found in cookies
+        if (!token && req.headers.authorization) {
+            if (req.headers.authorization.startsWith("Bearer ")) {
+                token = req.headers.authorization.split(" ")[1];
+            } else {
+                token = req.headers.authorization;
+            }
+        }
+
         if (!token) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized",
+                message: "Unauthorized: No token provided",
             });
         }
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         if(decoded.role === "MENTOR"){

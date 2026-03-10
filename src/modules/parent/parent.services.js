@@ -41,10 +41,7 @@ const parentLogin = async (email, password) => {
     if (!isPasswordValid) {
         throw new Error("Invalid password");
     }
-    console.log("DEBUG: env.JWT_SECRET =", process.env.JWT_SECRET);
-    const secret = process.env.JWT_SECRET || "fallback_secret_for_debug_only";
-    console.log("DEBUG: Using secret =", secret);
-    const token = jwt.sign({ id: parent.id, role: parent.role }, secret, { expiresIn: "1h" });
+    const token = jwt.sign({ id: parent.id, role: parent.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
     return { token, parent };
 };
 

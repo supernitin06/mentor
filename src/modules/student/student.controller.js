@@ -35,8 +35,8 @@ const studentLogin = async (req, res, next) => {
         const result = await studentService.studentLogin(email, password);
         res.cookie("token", result.token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+            secure: true,
+            sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000,
         });
         res.status(200).json({

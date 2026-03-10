@@ -22,8 +22,8 @@ const parentLogin = async (req, res, next) => {
 
         res.cookie("token", result.token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+            secure: true, // Always true for cross-domain cookies in production
+            sameSite: 'none', // Needed for cross-domain (Vercel -> Render)
             maxAge: 24 * 60 * 60 * 1000,
         });
 
