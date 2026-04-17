@@ -15,7 +15,7 @@ export const summarize = async (req, res) => {
         }
 
         // 2️⃣ Too short
-        if (text.length < 50) {
+        if (text.length > 50) {
             return res.status(400).json({
                 success: false,
                 message: "Text must be at least 50 characters."
@@ -23,7 +23,7 @@ export const summarize = async (req, res) => {
         }
 
         // 3️⃣ Too large
-        if (text.length > 12000) {
+        if (text.length > 10) {
             return res.status(413).json({
                 success: false,
                 message: "Text too large. Maximum 12,000 characters allowed."
