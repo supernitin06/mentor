@@ -4,6 +4,8 @@ export const summarize = async (req, res) => {
   try {
     const { text } = req.body;
 
+    console.log("Received Payload:", req.body);
+
     // 1️⃣ Validate input exists
     if (!text || typeof text !== "string") {
       return res.status(400).json({
@@ -13,6 +15,8 @@ export const summarize = async (req, res) => {
     }
 
     const cleanText = text.trim();
+
+    console.log("Cleaned Text:", cleanText);
 
     if (cleanText.length === 0) {
       return res.status(400).json({

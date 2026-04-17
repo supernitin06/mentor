@@ -57,7 +57,8 @@ ${text}
     return result;
 
   } catch (error) {
-    console.error("Groq Error:", error.message || error);
+    console.error("Groq API Key:", process.env.GROQ_API_KEY);
+    console.error("Groq Error Details:", error.response?.data || error.message || error);
 
     throw {
       status: 502,
@@ -104,7 +105,8 @@ ${text}
 
     return completion.choices[0].message.content.trim();
   } catch (error) {
-    console.error("Groq Error:", error.message || error);
+    console.error("Groq API Key:", process.env.GROQ_API_KEY);
+    console.error("Groq Error Details:", error.response?.data || error.message || error);
 
     throw {
       status: 502,
